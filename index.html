@@ -18,13 +18,13 @@
 </head>
 <body class="bg-darkbg text-gray-100 font-sans min-h-screen pb-20">
 
-    <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+    <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-md">
         <h1 class="text-xl font-bold text-accent">🔥 IronFlow AI</h1>
-        <div class="flex gap-1">
-            <button onclick="switchTab('workout')" id="nav-workout" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-white">Tréning</button>
-            <button onclick="switchTab('history')" id="nav-history" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400">História</button>
-            <button onclick="switchTab('exercises')" id="nav-exercises" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400">Cviky</button>
-            <button onclick="switchTab('templates')" id="nav-templates" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400">Predlohy</button>
+        <div class="flex gap-1 overflow-x-auto">
+            <button onclick="switchTab('workout')" id="nav-workout" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-white transition">Tréning</button>
+            <button onclick="switchTab('history')" id="nav-history" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">História</button>
+            <button onclick="switchTab('exercises')" id="nav-exercises" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Cviky</button>
+            <button onclick="switchTab('templates')" id="nav-templates" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Predlohy</button>
         </div>
     </header>
 
@@ -44,8 +44,8 @@
             </div>
 
             <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 flex justify-between items-center">
-                <input type="text" id="workout-name" value="Môj tréning" class="bg-transparent text-lg font-bold w-full focus:outline-none text-white">
-                <button onclick="finishWorkout()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">Uložiť</button>
+                <input type="text" id="workout-name" value="Môj tréning" oninput="saveActive()" class="bg-transparent text-lg font-bold w-full focus:outline-none text-white">
+                <button onclick="finishWorkout()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">Uložiť</button>
             </div>
 
             <div id="timer-box" class="bg-cardbg p-3 rounded-2xl border border-gray-800 flex items-center justify-between">
@@ -62,7 +62,7 @@
 
             <div id="active-exercises" class="space-y-4"></div>
 
-            <button onclick="openExerciseModal()" class="w-full py-3.5 bg-gray-800 border border-gray-700 border-dashed rounded-2xl font-semibold text-sm text-gray-300">
+            <button onclick="openExerciseModal()" class="w-full py-3.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 border-dashed rounded-2xl font-semibold text-sm text-gray-300 transition flex items-center justify-center gap-2">
                 ➕ Pridať cvik
             </button>
         </section>
@@ -77,14 +77,14 @@
         <section id="tab-exercises" class="space-y-4 hidden">
             <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-3">
                 <h2 class="text-md font-bold">Nový cvik</h2>
-                <input type="text" id="new-ex-name" placeholder="Názov cviku" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white">
-                <select id="new-ex-cat" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white">
+                <input type="text" id="new-ex-name" placeholder="Názov cviku" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-accent">
+                <select id="new-ex-cat" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-accent">
                     <option value="push">Push</option>
                     <option value="pull">Pull</option>
                     <option value="legs">Legs</option>
                     <option value="core">Core</option>
                 </select>
-                <button onclick="addNewExercise()" class="w-full bg-accent text-white py-2 rounded-xl text-sm font-semibold">Uložiť cvik</button>
+                <button onclick="addNewExercise()" class="w-full bg-accent hover:bg-blue-600 text-white py-2 rounded-xl text-sm font-semibold transition">Uložiť cvik</button>
             </div>
             <div id="all-exercises-list" class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-3 text-sm"></div>
         </section>
@@ -93,9 +93,9 @@
         <section id="tab-templates" class="space-y-4 hidden">
             <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-3">
                 <h2 class="text-md font-bold">Nová predloha</h2>
-                <input type="text" id="new-tpl-name" placeholder="Názov predlohy" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white">
+                <input type="text" id="new-tpl-name" placeholder="Názov predlohy" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-accent">
                 <div id="tpl-checkboxes" class="max-h-40 overflow-y-auto bg-gray-900 p-2 rounded-xl border border-gray-700 space-y-1 text-xs"></div>
-                <button onclick="saveTemplate()" class="w-full bg-accent text-white py-2 rounded-xl text-sm font-semibold">Uložiť predlohu</button>
+                <button onclick="saveTemplate()" class="w-full bg-accent hover:bg-blue-600 text-white py-2 rounded-xl text-sm font-semibold transition">Uložiť predlohu</button>
             </div>
             <div id="templates-list" class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-3 text-sm"></div>
         </section>
@@ -144,10 +144,10 @@
         function switchTab(t) {
             ['workout', 'history', 'exercises', 'templates'].forEach(tab => {
                 document.getElementById('tab-' + tab).classList.add('hidden');
-                document.getElementById('nav-' + tab).className = "px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400";
+                document.getElementById('nav-' + tab).className = "px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition";
             });
             document.getElementById('tab-' + t).classList.remove('hidden');
-            document.getElementById('nav-' + t).className = "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-white";
+            document.getElementById('nav-' + t).className = "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-white transition";
             if(t === 'history') renderHistory();
             if(t === 'exercises') renderExercises();
             if(t === 'templates') renderTemplates();
@@ -155,6 +155,7 @@
 
         function renderWorkout() {
             const container = document.getElementById('active-exercises');
+            document.getElementById('workout-name').value = activeWorkout.name;
             if (activeWorkout.exercises.length === 0) {
                 container.innerHTML = `<div class="bg-cardbg p-6 rounded-2xl border border-gray-800 text-center text-gray-500 text-sm">Žiadne cviky. Vyber predlohu vyššie alebo pridaj cvik.</div>`;
                 return;
@@ -163,7 +164,7 @@
                 <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-accent text-sm">${ex.name}</h3>
-                        <button onclick="removeEx(${exIdx})" class="text-gray-500 text-xs">Odstrániť</button>
+                        <button onclick="removeEx(${exIdx})" class="text-red-400 hover:text-red-300 text-xs px-1 font-bold" title="Odstrániť cvik">❌</button>
                     </div>
                     <div class="space-y-1.5">
                         ${ex.sets.map((s, sIdx) => `
@@ -172,11 +173,11 @@
                                 <input type="number" step="0.5" value="${s.weight}" onchange="updateSet(${exIdx}, ${sIdx}, 'weight', this.value)" class="col-span-3 bg-gray-800 text-center py-1 rounded border border-gray-700 text-white font-semibold">
                                 <input type="number" value="${s.reps}" onchange="updateSet(${exIdx}, ${sIdx}, 'reps', this.value)" class="col-span-3 bg-gray-800 text-center py-1 rounded border border-gray-700 text-white font-semibold">
                                 <input type="number" step="0.5" value="${s.rpe}" onchange="updateSet(${exIdx}, ${sIdx}, 'rpe', this.value)" class="col-span-3 bg-gray-800 text-center py-1 rounded border border-gray-700 text-accent font-semibold">
-                                <button onclick="removeSet(${exIdx}, ${sIdx})" class="col-span-1 text-gray-500 text-center">&times;</button>
+                                <button onclick="removeSet(${exIdx}, ${sIdx})" class="col-span-1 text-red-400 text-center font-bold" title="Zmazať sériu">❌</button>
                             </div>
                         `).join('')}
                     </div>
-                    <button onclick="addSet(${exIdx})" class="w-full py-1.5 bg-gray-800 text-xs text-gray-300 font-medium rounded-xl">+ Pridať sériu</button>
+                    <button onclick="addSet(${exIdx})" class="w-full py-1.5 bg-gray-800 hover:bg-gray-700 text-xs text-gray-300 font-medium rounded-xl transition">+ Pridať sériu</button>
                 </div>
             `).join('');
         }
@@ -184,7 +185,7 @@
         function renderQuickTemplates() {
             const container = document.getElementById('quick-templates');
             container.innerHTML = Object.keys(templates).map(name => `
-                <button onclick="loadTemplate('${name}')" class="bg-gray-800 text-xs py-2 px-1 rounded-xl font-medium border border-gray-700 truncate text-gray-200">⚡ ${name}</button>
+                <button onclick="loadTemplate('${name}')" class="bg-gray-800 hover:bg-gray-700 text-xs py-2 px-1 rounded-xl font-medium border border-gray-700 truncate text-gray-200 transition">⚡ ${name}</button>
             `).join('');
         }
 
@@ -242,7 +243,7 @@
                 <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-2">
                     <div class="flex justify-between items-center border-b border-gray-800 pb-2">
                         <span class="font-bold text-accent text-sm">${w.name} (${w.date})</span>
-                        <button onclick="deleteHistory(${idx})" class="text-xs text-gray-500">❌ Vymazať</button>
+                        <button onclick="deleteHistory(${idx})" class="text-red-400 hover:text-red-300 text-xs px-1 font-bold" title="Vymazať tréning">❌</button>
                     </div>
                     <div class="text-xs space-y-1 text-gray-400">
                         ${w.exercises.map(e => `<div><strong class="text-gray-200">${e.name}:</strong> ${e.sets.map(s => `${s.weight}kg × ${s.reps}`).join(' | ')}</div>`).join('')}
@@ -252,9 +253,11 @@
         }
 
         function deleteHistory(idx) {
-            historyData.splice(idx, 1);
-            localStorage.setItem('if_hist', JSON.stringify(historyData));
-            renderHistory();
+            if (confirm("Naozaj chceš vymazať tento tréning z histórie?")) {
+                historyData.splice(idx, 1);
+                localStorage.setItem('if_hist', JSON.stringify(historyData));
+                renderHistory();
+            }
         }
 
         function openExerciseModal() {
@@ -263,7 +266,7 @@
             let all = [];
             Object.values(exercises).forEach(arr => all.push(...arr));
             list.innerHTML = all.map(ex => `
-                <button onclick="addExToWorkout('${ex}')" class="w-full text-left bg-gray-900 p-3 rounded-xl border border-gray-800 text-sm font-medium flex justify-between">
+                <button onclick="addExToWorkout('${ex}')" class="w-full text-left bg-gray-900 hover:bg-gray-800 p-3 rounded-xl border border-gray-800 text-sm font-medium flex justify-between transition">
                     <span>${ex}</span> <span class="text-accent">+ Pridať</span>
                 </button>
             `).join('');
@@ -280,19 +283,39 @@
 
         function renderExercises() {
             const list = document.getElementById('all-exercises-list');
-            let all = [];
-            Object.values(exercises).forEach(arr => all.push(...arr));
-            list.innerHTML = all.map(ex => `<div class="p-2 bg-gray-900 rounded-lg border border-gray-800">${ex}</div>`).join('');
+            let html = '';
+            const catNames = { push: 'Push (Tlaky)', pull: 'Pull (Ťahy)', legs: 'Legs (Nohy)', core: 'Core / Ostatné' };
+            
+            for (let cat in exercises) {
+                html += `<div class="space-y-1.5 mb-3"><div class="text-xs uppercase text-accent font-semibold">${catNames[cat] || cat}</div>`;
+                html += exercises[cat].map(ex => `
+                    <div class="p-2.5 bg-gray-900 rounded-xl border border-gray-800 flex justify-between items-center text-xs">
+                        <span class="text-gray-200">${ex}</span>
+                        <button onclick="deleteGlobalExercise('${cat}', '${ex}')" class="text-red-400 hover:text-red-300 font-bold px-1" title="Zmazať cvik">❌</button>
+                    </div>
+                `).join('');
+                html += `</div>`;
+            }
+            list.innerHTML = html;
         }
 
         function addNewExercise() {
             const val = document.getElementById('new-ex-name').value.trim();
             const cat = document.getElementById('new-ex-cat').value;
-            if (!val) return;
+            if (!val) return alert("Zadaj názov cviku!");
+            if (exercises[cat].includes(val)) return alert("Tento cvik už existuje!");
             exercises[cat].push(val);
             localStorage.setItem('if_ex', JSON.stringify(exercises));
             document.getElementById('new-ex-name').value = "";
             renderExercises();
+        }
+
+        function deleteGlobalExercise(cat, exName) {
+            if (confirm(`Naozaj chceš vymazať cvik "${exName}" zo zoznamu?`)) {
+                exercises[cat] = exercises[cat].filter(e => e !== exName);
+                localStorage.setItem('if_ex', JSON.stringify(exercises));
+                renderExercises();
+            }
         }
 
         function renderTemplates() {
@@ -302,18 +325,41 @@
             chk.innerHTML = all.map(ex => `<label class="block"><input type="checkbox" value="${ex}" class="tpl-cb"> ${ex}</label>`).join('');
             
             const list = document.getElementById('templates-list');
-            list.innerHTML = Object.keys(templates).map(k => `<div class="p-2 bg-gray-900 rounded-lg border border-gray-800"><strong>${k}:</strong> ${templates[k].join(', ')}</div>`).join('');
+            const keys = Object.keys(templates);
+            if (keys.length === 0) {
+                list.innerHTML = `<div class="text-gray-500 text-center py-2 text-xs">Žiadne uložené predlohy.</div>`;
+                return;
+            }
+            list.innerHTML = keys.map(k => `
+                <div class="p-3 bg-gray-900 rounded-xl border border-gray-800 flex justify-between items-center">
+                    <div>
+                        <strong class="text-accent text-sm">${k}</strong>
+                        <div class="text-xs text-gray-400 mt-0.5">${templates[k].join(', ')}</div>
+                    </div>
+                    <button onclick="deleteTemplate('${k}')" class="text-red-400 hover:text-red-300 font-bold px-1" title="Zmazať predlohu">❌</button>
+                </div>
+            `).join('');
         }
 
         function saveTemplate() {
             const name = document.getElementById('new-tpl-name').value.trim();
             const cbs = document.querySelectorAll('.tpl-cb:checked');
-            if(!name || cbs.length === 0) return alert("Vyplň názov a vyber cviky.");
+            if(!name || cbs.length === 0) return alert("Vyplň názov a vyber aspoň jeden cvik.");
             templates[name] = Array.from(cbs).map(c => c.value);
             localStorage.setItem('if_tpl', JSON.stringify(templates));
             document.getElementById('new-tpl-name').value = "";
             renderTemplates();
             renderQuickTemplates();
+            alert("Predloha úspešne uložená!");
+        }
+
+        function deleteTemplate(name) {
+            if (confirm(`Naozaj chceš vymazať predlohu "${name}"?`)) {
+                delete templates[name];
+                localStorage.setItem('if_tpl', JSON.stringify(templates));
+                renderTemplates();
+                renderQuickTemplates();
+            }
         }
 
         function startTimer(s) {
