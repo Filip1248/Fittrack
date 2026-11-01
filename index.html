@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitTrack AI - Gym Tracker</title>
+    <title>IronFlow AI - Gym Tracker</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -27,12 +27,13 @@
     <!-- Header -->
     <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-md">
         <h1 class="text-xl font-bold tracking-wider text-accent flex items-center gap-2">
-            💪 FitTrack <span class="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full">AI</span>
+            🔥 IronFlow <span class="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full">AI</span>
         </h1>
-        <div class="flex gap-2">
-            <button onclick="switchTab('workout')" id="nav-workout" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-accent text-white transition">Tréning</button>
-            <button onclick="switchTab('history')" id="nav-history" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition">História</button>
-            <button onclick="switchTab('exercises')" id="nav-exercises" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition">Cviky</button>
+        <div class="flex gap-1 overflow-x-auto">
+            <button onclick="switchTab('workout')" id="nav-workout" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-white transition">Tréning</button>
+            <button onclick="switchTab('history')" id="nav-history" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">História</button>
+            <button onclick="switchTab('exercises')" id="nav-exercises" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Cviky</button>
+            <button onclick="switchTab('templates')" id="nav-templates" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Predlohy</button>
         </div>
     </header>
 
@@ -44,28 +45,26 @@
             <!-- Quick Templates -->
             <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 shadow-sm">
                 <h2 class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-3">Tréningové predlohy (Templates)</h2>
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="loadTemplate('Push Day')" class="bg-gray-800 hover:bg-gray-700 text-xs py-2 px-3 rounded-xl font-medium transition text-center border border-gray-700">🔥 Push Day</button>
-                    <button onclick="loadTemplate('Pull Day')" class="bg-gray-800 hover:bg-gray-700 text-xs py-2 px-3 rounded-xl font-medium transition text-center border border-gray-700">⚡ Pull Day</button>
-                    <button onclick="loadTemplate('Leg Day')" class="bg-gray-800 hover:bg-gray-700 text-xs py-2 px-3 rounded-xl font-medium transition text-center border border-gray-700">🦵 Leg Day</button>
+                <div id="quick-templates-container" class="grid grid-cols-3 gap-2">
+                    <!-- Dynamically rendered templates -->
                 </div>
             </div>
 
             <!-- Active Workout Header -->
             <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 flex justify-between items-center">
                 <div>
-                    <span class="text-xs text-accent font-semibold uppercase tracking-wider">Aktívny deň</span>
-                    <input type="text" id="workout-name" value="Moji tréning" class="bg-transparent text-lg font-bold w-full focus:outline-none border-b border-transparent focus:border-accent">
+                    <span id="active-mode-label" class="text-xs text-accent font-semibold uppercase tracking-wider">Aktívny deň</span>
+                    <input type="text" id="workout-name" value="Môj tréning" oninput="saveDraft()" class="bg-transparent text-lg font-bold w-full focus:outline-none border-b border-transparent focus:border-accent">
                 </div>
                 <button onclick="finishWorkout()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md transition flex items-center gap-1">
-                    Uložiť tréning
+                    Uložiť
                 </button>
             </div>
 
             <!-- Rest Timer Widget -->
-            <div class="bg-cardbg p-3 rounded-2xl border border-gray-800 flex items-center justify-between">
+            <div id="timer-box" class="bg-cardbg p-3 rounded-2xl border border-gray-800 flex items-center justify-between transition-colors">
                 <div class="flex items-center gap-2">
-                    <span class="text-sm">⏱️ Rest Timer:</span>
+                    <span class="text-sm">⏱️ Rest:</span>
                     <span id="timer-display" class="font-mono text-lg font-bold text-accent">00:00</span>
                 </div>
                 <div class="flex gap-1">
@@ -125,6 +124,33 @@
             </div>
         </section>
 
+        <!-- 4. TEMPLATES MANAGEMENT TAB -->
+        <section id="tab-templates" class="space-y-4 hidden">
+            <div class="bg-cardbg p-4 rounded-2xl border border-gray-800">
+                <h2 class="text-md font-bold mb-3">Vytvoriť novú predlohu</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Názov predlohy</label>
+                        <input type="text" id="new-tpl-name" placeholder="napr. Upper Body" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Vyber cviky do predlohy (označ viaceré)</label>
+                        <div id="tpl-exercises-checkboxes" class="max-h-48 overflow-y-auto space-y-1 bg-gray-900 p-2 rounded-xl border border-gray-700 text-xs">
+                            <!-- Checkboxes populated via JS -->
+                        </div>
+                    </div>
+                    <button onclick="saveNewTemplate()" class="w-full bg-accent hover:bg-accenthover text-white py-2 rounded-xl text-sm font-semibold transition">Uložiť novú predlohu</button>
+                </div>
+            </div>
+
+            <div class="bg-cardbg p-4 rounded-2xl border border-gray-800">
+                <h2 class="text-md font-bold mb-3">Moje predlohy</h2>
+                <div id="templates-management-list" class="space-y-3 text-sm">
+                    <!-- Templates list with delete/edit options -->
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- EXERCISE SELECTION MODAL -->
@@ -150,6 +176,22 @@
 
     <!-- JavaScript Logic -->
     <script>
+        // Data migration from fittrack to ironflow storage keys if needed
+        function getStorage(key, defaultVal) {
+            let val = localStorage.getItem('ironflow_' + key);
+            if (!val) {
+                val = localStorage.getItem('fittrack_' + key);
+                if (val) {
+                    localStorage.setItem('ironflow_' + key, val);
+                }
+            }
+            return val ? JSON.parse(val) : defaultVal;
+        }
+
+        function setStorage(key, val) {
+            localStorage.setItem('ironflow_' + key, JSON.stringify(val));
+        }
+
         // Default exercises database
         const defaultExercises = {
             push: [
@@ -172,45 +214,74 @@
             ]
         };
 
-        // Load exercises from localStorage or defaults
-        let exercises = JSON.parse(localStorage.getItem('fittrack_exercises')) || defaultExercises;
+        let exercises = getStorage('exercises', defaultExercises);
 
-        // Templates configuration
-        const templates = {
+        // Default templates
+        const defaultTemplates = {
             "Push Day": ["Incline DB Press", "Overhead Press", "Cable Lateral Raises", "Triceps Pushdown"],
             "Pull Day": ["Lat Pulldown", "Seated Cable Row", "Face Pulls", "Incline DB Curl"],
             "Leg Day": ["Hack Squat", "Romanian Deadlift (RDL)", "Leg Extension", "Seated Leg Curl"]
         };
 
-        let activeWorkout = {
-            name: "Tréning",
-            exercises: [] // Array of { name, sets: [{ weight, reps, rpe }] }
-        };
+        let templates = getStorage('templates', defaultTemplates);
+
+        // Active workout draft & editing index
+        let activeWorkout = getStorage('active_draft', {
+            name: "Môj tréning",
+            exercises: []
+        });
+
+        let editingHistoryIndex = getStorage('editing_history_index', null);
 
         let currentModalCategory = 'push';
         let timerInterval = null;
 
+        function saveDraft() {
+            activeWorkout.name = document.getElementById('workout-name').value;
+            setStorage('active_draft', activeWorkout);
+        }
+
         // --- NAVIGATION TABS ---
         function switchTab(tabId) {
-            document.getElementById('tab-workout').classList.add('hidden');
-            document.getElementById('tab-history').classList.add('hidden');
-            document.getElementById('tab-exercises').classList.add('hidden');
-            
-            document.getElementById('nav-workout').className = "px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition";
-            document.getElementById('nav-history').className = "px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition";
-            document.getElementById('nav-exercises').className = "px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition";
+            ['workout', 'history', 'exercises', 'templates'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                document.getElementById('nav-' + t).className = "px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition";
+            });
 
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            document.getElementById('nav-' + tabId).className = "px-3 py-1.5 rounded-lg text-sm font-medium bg-accent text-white transition";
+            document.getElementById('nav-' + tabId).className = "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-white transition";
 
             if (tabId === 'history') renderHistory();
             if (tabId === 'exercises') renderAllExercisesList();
+            if (tabId === 'templates') renderTemplatesManagement();
+            if (tabId === 'workout') renderQuickTemplates();
         }
 
         // --- WORKOUT LOGIC ---
+        function renderQuickTemplates() {
+            const container = document.getElementById('quick-templates-container');
+            const keys = Object.keys(templates);
+            if (keys.length === 0) {
+                container.innerHTML = `<span class="col-span-3 text-xs text-gray-500 text-center py-2">Žiadne predlohy. Vytvor si ich v záložke Predlohy.</span>`;
+                return;
+            }
+            container.innerHTML = keys.map(name => `
+                <button onclick="loadTemplate('${name}')" class="bg-gray-800 hover:bg-gray-700 text-xs py-2 px-2 rounded-xl font-medium transition text-center border border-gray-700 truncate">⚡ ${name}</button>
+            `).join('');
+        }
+
         function renderActiveWorkout() {
             const container = document.getElementById('active-exercises');
             document.getElementById('workout-name').value = activeWorkout.name;
+            const modeLabel = document.getElementById('active-mode-label');
+            
+            if (editingHistoryIndex !== null) {
+                modeLabel.innerText = "Úprava tréningu";
+                modeLabel.className = "text-xs text-yellow-500 font-semibold uppercase tracking-wider";
+            } else {
+                modeLabel.innerText = "Aktívny deň";
+                modeLabel.className = "text-xs text-accent font-semibold uppercase tracking-wider";
+            }
             
             if (activeWorkout.exercises.length === 0) {
                 container.innerHTML = `
@@ -239,10 +310,10 @@
                         ${ex.sets.map((set, setIndex) => `
                             <div class="grid grid-cols-12 gap-1 items-center bg-gray-900/60 p-1.5 rounded-xl border border-gray-800/80">
                                 <span class="col-span-2 text-center font-bold text-sm text-gray-400">${setIndex + 1}</span>
-                                <input type="number" step="0.5" value="${set.weight}" onchange="updateSet(${exIndex}, ${setIndex}, 'weight', this.value)" class="col-span-3 bg-gray-900 text-center py-1.5 rounded-lg border border-gray-700 text-sm focus:outline-none focus:border-accent font-semibold">
-                                <input type="number" value="${set.reps}" onchange="updateSet(${exIndex}, ${setIndex}, 'reps', this.value)" class="col-span-3 bg-gray-900 text-center py-1.5 rounded-lg border border-gray-700 text-sm focus:outline-none focus:border-accent font-semibold">
-                                <input type="number" step="0.5" max="10" min="5" value="${set.rpe}" onchange="updateSet(${exIndex}, ${setIndex}, 'rpe', this.value)" class="col-span-3 bg-gray-900 text-center py-1.5 rounded-lg border border-gray-700 text-sm focus:outline-none focus:border-accent font-semibold text-accent">
-                                <button onclick="removeSet(${exIndex}, ${setIndex})" class="col-span-1 text-gray-500 hover:text-red-400 text-center font-bold">&times;</button>
+                                <input type="number" step="0.5" value="${set.weight}" onchange="updateSet(${exIndex},${setIndex}, 'weight', this.value)" class="col-span-3 bg-gray-900 text-center py-1.5 rounded-lg border border-gray-700 text-sm focus:outline-none focus:border-accent font-semibold">
+                                <input type="number" value="${set.reps}" onchange="updateSet(${exIndex},${setIndex}, 'reps', this.value)" class="col-span-3 bg-gray-900 text-center py-1.5 rounded-lg border border-gray-700 text-sm focus:outline-none focus:border-accent font-semibold">
+                                <input type="number" step="0.5" max="10" min="5" value="${set.rpe}" onchange="updateSet(${exIndex},${setIndex}, 'rpe', this.value)" class="col-span-3 bg-gray-900 text-center py-1.5 rounded-lg border border-gray-700 text-sm focus:outline-none focus:border-accent font-semibold text-accent">
+                                <button onclick="removeSet(${exIndex},${setIndex})" class="col-span-1 text-gray-500 hover:text-red-400 text-center font-bold">&times;</button>
                             </div>
                         `).join('')}
                     </div>
@@ -265,18 +336,19 @@
                     { weight: getLastWeight(name), reps: 10, rpe: 9 }
                 ]
             }));
+            saveDraft();
             renderActiveWorkout();
         }
 
         function getLastWeight(exerciseName) {
-            const history = JSON.parse(localStorage.getItem('fittrack_history')) || [];
+            const history = getStorage('history', []);
             for (let i = history.length - 1; i >= 0; i--) {
                 const foundEx = history[i].exercises.find(e => e.name === exerciseName);
                 if (foundEx && foundEx.sets.length > 0) {
                     return foundEx.sets[foundEx.sets.length - 1].weight;
                 }
             }
-            return 50; // default fallback weight
+            return 50;
         }
 
         function addSet(exIndex) {
@@ -286,20 +358,24 @@
             const prevRpe = lastSet.length > 0 ? lastSet[lastSet.length - 1].rpe : 8;
             
             activeWorkout.exercises[exIndex].sets.push({ weight: prevWeight, reps: prevReps, rpe: prevRpe });
+            saveDraft();
             renderActiveWorkout();
         }
 
         function removeSet(exIndex, setIndex) {
             activeWorkout.exercises[exIndex].sets.splice(setIndex, 1);
+            saveDraft();
             renderActiveWorkout();
         }
 
         function updateSet(exIndex, setIndex, field, value) {
             activeWorkout.exercises[exIndex].sets[setIndex][field] = parseFloat(value) || 0;
+            saveDraft();
         }
 
         function removeExerciseFromWorkout(exIndex) {
             activeWorkout.exercises.splice(exIndex, 1);
+            saveDraft();
             renderActiveWorkout();
         }
 
@@ -344,10 +420,11 @@
                 ]
             });
             closeExerciseModal();
+            saveDraft();
             renderActiveWorkout();
         }
 
-        // --- EXERCISES MANAGEMENT (ADD/REMOVE GLOBAL) ---
+        // --- EXERCISES MANAGEMENT ---
         function addNewCustomExercise() {
             const nameInput = document.getElementById('new-ex-name');
             const catSelect = document.getElementById('new-ex-cat');
@@ -366,7 +443,7 @@
             }
 
             exercises[cat].push(name);
-            localStorage.setItem('fittrack_exercises', JSON.stringify(exercises));
+            setStorage('exercises', exercises);
             nameInput.value = "";
             renderAllExercisesList();
             alert("Cvik úspešne pridaný!");
@@ -394,8 +471,74 @@
         function deleteGlobalExercise(category, exerciseName) {
             if (confirm(`Naozaj chceš vymazať cvik "${exerciseName}" zo zoznamu?`)) {
                 exercises[category] = exercises[category].filter(e => e !== exerciseName);
-                localStorage.setItem('fittrack_exercises', JSON.stringify(exercises));
+                setStorage('exercises', exercises);
                 renderAllExercisesList();
+            }
+        }
+
+        // --- TEMPLATES MANAGEMENT ---
+        function renderTemplatesManagement() {
+            // Render checkboxes for new template creation
+            const chkContainer = document.getElementById('tpl-exercises-checkboxes');
+            let allExs = [];
+            Object.values(exercises).forEach(arr => allExs.push(...arr));
+            
+            chkContainer.innerHTML = allExs.map(ex => `
+                <label class="flex items-center gap-2 cursor-pointer hover:text-white">
+                    <input type="checkbox" value="${ex}" class="tpl-checkbox rounded bg-gray-800 border-gray-700 text-accent focus:ring-0">
+                    <span>${ex}</span>
+                </label>
+            `).join('');
+
+            // Render existing templates list
+            const listContainer = document.getElementById('templates-management-list');
+            const keys = Object.keys(templates);
+
+            if (keys.length === 0) {
+                listContainer.innerHTML = `<div class="text-gray-500 text-center py-4">Žiadne uložené predlohy.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = keys.map(name => `
+                <div class="bg-gray-900 p-3 rounded-xl border border-gray-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-accent">${name}</span>
+                        <button onclick="deleteTemplate('${name}')" class="text-gray-500 hover:text-red-400 text-xs font-bold">❌ Zmazať</button>
+                    </div>
+                    <div class="text-xs text-gray-400 pl-1">
+                        Cviky: ${templates[name].join(', ')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveNewTemplate() {
+            const nameInput = document.getElementById('new-tpl-name');
+            const name = nameInput.value.trim();
+            const checkboxes = document.querySelectorAll('.tpl-checkbox:checked');
+            
+            if (!name) {
+                alert("Zadaj názov predlohy!");
+                return;
+            }
+            if (checkboxes.length === 0) {
+                alert("Vyber aspoň jeden cvik do predlohy!");
+                return;
+            }
+
+            const selectedExs = Array.from(checkboxes).map(cb => cb.value);
+            templates[name] = selectedExs;
+            setStorage('templates', templates);
+            nameInput.value = "";
+            renderTemplatesManagement();
+            alert("Predloha úspešne uložená!");
+        }
+
+        function deleteTemplate(name) {
+            if (confirm(`Naozaj chceš vymazať predlohu "${name}"?`)) {
+                delete templates[name];
+                setStorage('templates', templates);
+                renderTemplatesManagement();
             }
         }
 
@@ -409,22 +552,32 @@
             activeWorkout.name = document.getElementById('workout-name').value;
             activeWorkout.date = new Date().toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-            let history = JSON.parse(localStorage.getItem('fittrack_history')) || [];
-            history.unshift(activeWorkout);
-            localStorage.setItem('fittrack_history', JSON.stringify(history));
+            let history = getStorage('history', []);
 
-            alert("Tréning bol úspešne uložený!");
-            
-            // Reset active workout
-            activeWorkout = { name: "Moji tréning", exercises: [] };
+            if (editingHistoryIndex !== null) {
+                // Update existing history item
+                history[editingHistoryIndex] = activeWorkout;
+                editingHistoryIndex = null;
+                setStorage('editing_history_index', null);
+                alert("Tréning bol úspešne upravený!");
+            } else {
+                // Add new history item
+                history.unshift(activeWorkout);
+                alert("Tréning bol úspešne uložený!");
+            }
+
+            setStorage('history', history);
+            localStorage.removeItem('ironflow_active_draft');
+            activeWorkout = { name: "Môj tréning", exercises: [] };
+
             renderActiveWorkout();
             switchTab('history');
         }
 
-        // --- HISTORY TAB ---
+        // --- HISTORY TAB & EDITING ---
         function renderHistory() {
             const historyContainer = document.getElementById('history-list');
-            const history = JSON.parse(localStorage.getItem('fittrack_history')) || [];
+            const history = getStorage('history', []);
 
             if (history.length === 0) {
                 historyContainer.innerHTML = `
@@ -438,8 +591,11 @@
             historyContainer.innerHTML = history.map((workout, index) => `
                 <div class="bg-cardbg p-4 rounded-2xl border border-gray-800 space-y-2">
                     <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                        <h3 class="font-bold text-md text-accent">${workout.name}</h3>
-                        <span class="text-xs text-gray-500">${workout.date}</span>
+                        <div>
+                            <h3 class="font-bold text-md text-accent">${workout.name}</h3>
+                            <span class="text-xs text-gray-500">${workout.date}</span>
+                        </div>
+                        <button onclick="editHistoryWorkout(${index})" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-1.5 rounded-xl font-medium border border-gray-700 text-gray-300">✏️ Upraviť</button>
                     </div>
                     <div class="space-y-2 text-sm pt-1">
                         ${workout.exercises.map(ex => `
@@ -455,19 +611,31 @@
             `).join('');
         }
 
-        // --- REST TIMER ---
+        function editHistoryWorkout(index) {
+            const history = getStorage('history', []);
+            activeWorkout = JSON.parse(JSON.stringify(history[index])); // deep copy
+            editingHistoryIndex = index;
+            setStorage('active_draft', activeWorkout);
+            setStorage('editing_history_index', editingHistoryIndex);
+            switchTab('workout');
+            renderActiveWorkout();
+        }
+
+        // --- VIBRATION & AUDIO TIMER ---
         let timerSeconds = 0;
         function startTimer(seconds) {
             clearInterval(timerInterval);
             timerSeconds = seconds;
             updateTimerDisplay();
+            const box = document.getElementById('timer-box');
+            box.className = "bg-cardbg p-3 rounded-2xl border border-gray-800 flex items-center justify-between transition-colors";
             
             timerInterval = setInterval(() => {
                 timerSeconds--;
                 if (timerSeconds <= 0) {
                     clearInterval(timerInterval);
                     timerSeconds = 0;
-                    alert("Čas odpočinku uplynul!");
+                    triggerTimerAlert();
                 }
                 updateTimerDisplay();
             }, 1000);
@@ -477,18 +645,11 @@
             clearInterval(timerInterval);
             timerSeconds = 0;
             updateTimerDisplay();
+            const box = document.getElementById('timer-box');
+            box.className = "bg-cardbg p-3 rounded-2xl border border-gray-800 flex items-center justify-between transition-colors";
         }
 
         function updateTimerDisplay() {
             const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
             const s = (timerSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('timer-display').innerText = `${m}:${s}`;
-        }
-
-        // Initial render on load
-        window.onload = function() {
-            renderActiveWorkout();
-        };
-    </script>
-</body>
-</html>
+            document.getElementById('timer-display').innerText =
